@@ -1,8 +1,6 @@
-import re
-import requests
-import pyperclip
 from pprint import pprint
-
+import re, requests, pyperclip
+from bs4 import BeautifulSoup
 class_regrex = re.compile(r'^class="[\d\w\D\W\s]"')
 
 three_to_four = {'Bootstrap 3x': 'Bootstrap 4',
@@ -52,8 +50,9 @@ three_to_four = {'Bootstrap 3x': 'Bootstrap 4',
                  'label': 'badge',
                  'badge': 'badge badge-pill'
                  }
+
 """
-???
+??? Not yet sure how to move these
 'list-inline > li': 'list-inline-item',
 'dropdown-menu > li': 'dropdown-item',
 'nav navbar > li': 'nav-item',
@@ -62,16 +61,11 @@ three_to_four = {'Bootstrap 3x': 'Bootstrap 4',
 'pagination > li > a': 'page-link',
 """
 
-def sanitize_HTML(all_text):
-    all_text = all_text.replace('<b>', '<strong>')
-    all_text = all_text.replace('</b>', '</strong>')
-    all_text = all_text.replace('<i>', '<em>')
-    all_text = all_text.replace('</i>', '</em>')
-    all_text = all_text.replace('<b></b>', '')
-    all_text = all_text.replace('<span></span>', '')
-    all_text = all_text.replace('<div></div>', '')
-    all_text = all_text.replace('<ul></ul>', '')
-    all_text = all_text.replace('<li></li>', '')
+
+def sanitize_html(all_text):
+    all_text = all_text.replace('<b>', '<strong>').replace('</b>', '</strong>').replace('<i>', '<em>')
+    all_text = all_text.replace('<b></b>', '').replace('<span></span>', '').replace('<ul></ul>', '')
+    all_text = all_text.replace('<li></li>', '').replace('</i>', '</em>')
     all_text = BeautifulSoup(all_text, 'html.parser')
     all_text = all_text.prettify()
     pyperclip.copy(all_text)
@@ -87,8 +81,8 @@ def iter_dict(a):
 
 
 changing_html = pyperclip.paste()
-print('dirty ', changing_html)
 regexpHandler = re.findall('class="(.*?)"', changing_html)
 for class_to_change in regexpHandler:
     changing_html = iter_dict(class_to_change)
-sanitize_HTML(changing_html)
+sanitize_html(changing_html)
+
