@@ -97,11 +97,12 @@ def list_items(a):
             kid['class'] = kid['class'] + ' ' + three_to_four_list.get(a)
           else:
             kid['class'] = three_to_four_list.get(a)
-    for nested_link in kid.find_all('a'):
-        if nested_link.has_attr('class'):
-            nested_link['class'] = kid['class'] + ' ' + three_to_four_list.get(a).replace('item', 'link')
-        else:
-            nested_link['class'] = three_to_four_list.get(a).replace('item', 'link')
+        if a == 'pagination ' or 'navbar':
+            for nested_link in kid.find_all('a'):
+                if nested_link.has_attr('class'):
+                    nested_link['class'] = kid['class'] + ' ' + three_to_four_list.get(a).replace('item', 'link')
+                else:
+                    nested_link['class'] = three_to_four_list.get(a).replace('item', 'link')
     soup.find(class_=a)['class'] = ''
     return str(soup).replace(' class=""', '')
 
