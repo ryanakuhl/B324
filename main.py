@@ -109,11 +109,11 @@ def list_items(a):
 
 changing_html = pyperclip.paste()
 regexpHandler = re.findall('class="(.*?)"', changing_html)
-list = []
+class_list = []
 for r in regexpHandler:
     for a in r.split(' '):
-      if a not in list:
-        list.append(a)
+      if a not in class_list:
+        class_list.append(a)
 for class_to_change in list:
     if class_to_change in three_to_four_list:
       changing_html = list_items(class_to_change)
