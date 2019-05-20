@@ -67,7 +67,6 @@ tag_dict = {'applet': 'object',
             'dir': 'ul',
             'menu': 'ul',
             'center': 'div',
-            'dir': 'ul',
             'isindex': 'form'
             }
 
@@ -93,15 +92,15 @@ def iter_dict(a):
 def list_items(a):
     soup = BeautifulSoup(changing_html, 'html.parser')
     for kid in soup.find(class_=a).children:
-      if kid.name == 'li':
-        if kid.has_attr('class'):
-          kid['class'] = kid['class'] + ' ' + three_to_four_list.get(a)
-        else:
-          kid['class'] = three_to_four_list.get(a)
-        for nested_link in kid.find_all('a'):
-          if nested_link.has_attr('class'):
-            nested_link['class'] = kid['class'] + ' ' + three_to_four_list.get(a).replace('item', 'link')
+        if kid.name == 'li':
+          if kid.has_attr('class'):
+            kid['class'] = kid['class'] + ' ' + three_to_four_list.get(a)
           else:
+            kid['class'] = three_to_four_list.get(a)
+    for nested_link in kid.find_all('a'):
+        if nested_link.has_attr('class'):
+            nested_link['class'] = kid['class'] + ' ' + three_to_four_list.get(a).replace('item', 'link')
+        else:
             nested_link['class'] = three_to_four_list.get(a).replace('item', 'link')
     soup.find(class_=a)['class'] = ''
     return str(soup).replace(' class=""', '')
@@ -111,12 +110,10 @@ changing_html = pyperclip.paste()
 regexpHandler = re.findall('class="(.*?)"', changing_html)
 class_list = []
 for r in regexpHandler:
-    for a in r.split(' '):
-      if a not in class_list:
-        class_list.append(a)
-for class_to_change in list:
+    class_list += [a for a in r.split(' ') if a not in class_list]
+for class_to_change in class_list:
     if class_to_change in three_to_four_list:
-      changing_html = list_items(class_to_change)
+        changing_html = list_items(class_to_change)
     elif class_to_change in three_to_four:
-      changing_html = iter_dict(class_to_change)
+        changing_html = iter_dict(class_to_change)
 sanitize_html(changing_html)
