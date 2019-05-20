@@ -1,7 +1,7 @@
 from pprint import pprint
-import re, requests, pyperclip
 from bs4 import BeautifulSoup
-class_regrex = re.compile(r'^class="[\d\w\D\W\s]"')
+import re, requests, pyperclip
+
 
 three_to_four = {'Bootstrap 3x': 'Bootstrap 4',
                  'col-\d-offset-\d': 'col offset-\d',
