@@ -2,7 +2,7 @@ Bootstrap Three To Four
 
 A lightweight find-and-replace dictionary to ease converting Bootstrap 3 classes to Boostrap 4.
 
-Just copy your HTML, utilize this repository, then paste your updated and cleaned code that is also pretty printed.
-A great component to plug into a Selenium iteration to automate upgrading a website. 
+Copy your HTML, utilize this repository, then paste your updated, cleaned, and pretty printed code.
+A great component to plug into a Selenium iteration to automate a sitewide upgrade. 
 
 Contributions are welcomed.
