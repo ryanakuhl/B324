@@ -1,12 +1,7 @@
-import time, re
-import easygui
+import re
 import requests
 import pyperclip
-import xlsxwriter
 from pprint import pprint
-from bs4 import BeautifulSoup
-from datetime import datetime, timedelta
-from datetimerange import DateTimeRange
 
 class_regrex = re.compile(r'^class="[\d\w\D\W\s]"')
 
