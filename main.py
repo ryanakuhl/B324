@@ -61,51 +61,62 @@ three_to_four_list = {
                       'pagination': 'page-item',
                       }
 
+tag_dict = {'applet': 'object',
+            'b': 'strong',
+            'i': 'em',
+            'dir': 'ul',
+            'menu': 'ul',
+            'center': 'div',
+            'dir': 'ul',
+            'isindex': 'form'
+            }
 
-def sanitize_html(all_text_in):
-  all_text = all_text_in.replace('<b>', '<strong>').replace('</b>', '</strong>')
-  all_text = all_text.replace('<i>', '<em>').replace('</i>', '</em>')
-  all_text = BeautifulSoup(all_text, 'html.parser')
-  empty_tags = all_text.findAll(lambda tag: not tag.contents)
-  [empty_tag.extract() for empty_tag in empty_tags]
-  pyperclip.copy(all_text.prettify())
+
+def sanitize_html(all_text):
+    all_text = BeautifulSoup(all_text, 'html.parser')
+    for tag in all_text.find_all():
+      if tag.name in tag_dict:
+        tag.name = tag_dict.get(tag.name)
+    empty_tags = all_text.findAll(lambda tag: not tag.contents)
+    [empty_tag.extract() for empty_tag in empty_tags]
+    pyperclip.copy(all_text.prettify())
 
 
 def iter_dict(a):
-  local_changing_html = changing_html
-  for item in three_to_four:
-    if re.match(re.compile(item), a):
-      local_changing_html = changing_html.replace(a, three_to_four.get(item))
-  return local_changing_html
+    local_changing_html = changing_html
+    for item in three_to_four:
+      if re.match(re.compile(item), a):
+        local_changing_html = changing_html.replace(a, three_to_four.get(item))
+    return local_changing_html
 
 
 def list_items(a):
-  soup = BeautifulSoup(changing_html, 'html.parser')
-  for kid in soup.find(class_=a).children:
-    if kid.name == 'li':
-      if kid.has_attr('class'):
-        kid['class'] = kid['class'] + ' ' + three_to_four_list.get(a)
-      else:
-        kid['class'] = three_to_four_list.get(a)
-      for nested_link in kid.find_all('a'):
-        if nested_link.has_attr('class'):
-          nested_link['class'] = kid['class'] + ' ' + three_to_four_list.get(a).replace('item', 'link')
+    soup = BeautifulSoup(changing_html, 'html.parser')
+    for kid in soup.find(class_=a).children:
+      if kid.name == 'li':
+        if kid.has_attr('class'):
+          kid['class'] = kid['class'] + ' ' + three_to_four_list.get(a)
         else:
-          nested_link['class'] = three_to_four_list.get(a).replace('item', 'link')
-  soup.find(class_=a)['class'] = ''
-  return str(soup).replace(' class=""', '')
+          kid['class'] = three_to_four_list.get(a)
+        for nested_link in kid.find_all('a'):
+          if nested_link.has_attr('class'):
+            nested_link['class'] = kid['class'] + ' ' + three_to_four_list.get(a).replace('item', 'link')
+          else:
+            nested_link['class'] = three_to_four_list.get(a).replace('item', 'link')
+    soup.find(class_=a)['class'] = ''
+    return str(soup).replace(' class=""', '')
 
 
 changing_html = pyperclip.paste()
 regexpHandler = re.findall('class="(.*?)"', changing_html)
 list = []
 for r in regexpHandler:
-  for a in r.split(' '):
-    if a not in list:
-      list.append(a)
+    for a in r.split(' '):
+      if a not in list:
+        list.append(a)
 for class_to_change in list:
-  if class_to_change in three_to_four_list:
-    changing_html = list_items(class_to_change)
-  elif class_to_change in three_to_four:
-    changing_html = iter_dict(class_to_change)
+    if class_to_change in three_to_four_list:
+      changing_html = list_items(class_to_change)
+    elif class_to_change in three_to_four:
+      changing_html = iter_dict(class_to_change)
 sanitize_html(changing_html)
