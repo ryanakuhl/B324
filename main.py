@@ -69,24 +69,19 @@ tag_dict = {'applet': 'object',
             'center': 'div',
             'isindex': 'form'
             }
-
+good_tags = ['img', 'br']
 
 def sanitize_html(all_text):
     all_text = BeautifulSoup(all_text, 'html.parser')
-    for tag in all_text.find_all():
-      if tag.name in tag_dict:
-        tag.name = tag_dict.get(tag.name)
-    empty_tags = all_text.findAll(lambda tag: not tag.contents)
+    [tag_dict.get(tag.name) for tag in all_text.find_all() if tag.name in tag_dict]
+    empty_tags = all_text.findAll(lambda tag: not tag.contents and tag.name not in good_tags)
     [empty_tag.extract() for empty_tag in empty_tags]
     pyperclip.copy(all_text.prettify())
 
 
 def iter_dict(a):
-    local_changing_html = changing_html
-    for item in three_to_four:
-      if re.match(re.compile(item), a):
-        local_changing_html = changing_html.replace(a, three_to_four.get(item))
-    return local_changing_html
+    local_changing_html = [changing_html.replace(a, three_to_four.get(item)) for item in three_to_four if re.match(re.compile(item), a)]
+    return local_changing_html[0]
 
 
 def list_items(a):
@@ -118,5 +113,3 @@ for class_to_change in class_list:
     elif class_to_change in three_to_four:
         changing_html = iter_dict(class_to_change)
 sanitize_html(changing_html)
-
-
